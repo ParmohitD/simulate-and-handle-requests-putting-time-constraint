@@ -1,0 +1,169 @@
+
+#include<stdio.h>
+#include<time.h>
+#include<pthread.h>
+#include<syslog.h>
+
+#define EXIT_SUCCESS 0;
+#define EXIT_FAILURE 1;
+
+void daemonn()//daemon is initiated
+{pid_t pid,sid;
+pid=fork();
+if(pid<0)
+{exit(EXIT_FAILURE);}
+if(pid>0)
+{exit(EXIT_SUCCESS);}
+unmask(0);
+openlog("sudesh",LOG_PID,LOG_DAEMON);
+chdir("/");
+if((chdir("/"))<0)
+{exit(EXIT_FAILURE);}
+}
+for(int x=sysconf(_SC_OPEN_MAX);x>=0;x--)//closes all open file descriptors
+{close(x);}
+}
+
+struct stud
+{int a;
+struct stud *next;
+}*fronts=NULL,*rears=NULL;
+struct teach
+{
+int b;
+struct teach *nextt;
+}*frontt=NULL,*reart=NULL;
+clock_t start,end,tot=1;
+void *handleteacher();
+void *handlestudent();
+int timeout(int sec)
+{
+clock_t wait;
+wait=clock()+sec*CLOCKS_PER_SEC;
+while(clock()<wait)
+{}
+return 1;
+}
+int main()
+{
+daemonn();//daemon called
+while(1)//initiating the daemon process for handling teacher and student request
+{
+syslog(LOG_NOTICE,"starting");
+insertt();
+inserts();
+}
+syslog(LOG_NOTICE,"ending");
+closelog();//crating log finished
+pthread_t t1,t2;
+time_t T=time(NULL);
+struct tm tm= *localtime(&T);
+printf("system date is: %02d/%02d/%04d\n",tm.tm_mday,tm.tm_mon+1,tm.tm_year+1900);
+printf("system time is: %02d:%02d:%02d\n",tm.tm_hour,tm.tm_min,tm.tm_sec);
+if(tm.tm_hour>=10 && tm.tm_hour<=12)
+{
+pthread_create(&t1,NULL,handleteacher,NULL);
+pthread_create(&t2,NULL,handlestudent,NULL);
+pthread_join(t1,NULL);
+pthread_join(t2,NULL);
+}
+
+else
+{
+printf("Your working time is over sudesh\nHAPPY RESTING!!");
+}
+printf("\ntotal time consumed for handling the queries %05d",tot);
+return 0;
+
+}
+int sval=0,tval=0;
+
+void inserts()//queue request insertion in student
+{struct stud *t=(struct stud*)malloc(sizeof(struct stud));
+sval++;
+t->a=sval;
+t->next=NULL;
+if(fronts==NULL)
+{fronts=rears=t;}
+else
+{rear->next=t;
+rear=t;
+}
+}
+void deletes()//queue deletion in student
+{
+if(front==NULL)
+{}
+else
+{struct stud *temp=fronts;
+fronts=fronts->next;
+free(temp);
+sval--;}
+}
+
+void insertt()//queue request insertion in teacher
+{struct teach *f=(struct teach*)malloc(sizeof(struct teach));
+tval++;
+f->b=tval;
+f->nextt=NULL;
+if(frontt==NULL)
+{frontt=reart=f;}
+else
+{reart->nextt=f;
+reart=f;
+}
+}
+void deletet()//queue deletion in teacher
+{if(frontt==NULL)
+{}
+else
+{struct teach *temp=frontt;
+frontt=frontt->nextt;
+free(temp);
+tval--;}
+}
+
+
+void *handleteacher()//sudesh is handling request from a student
+{
+while(tval>0)
+{
+if(timeout(15)!=1)
+{//do the process you are supposed to do
+deletet();
+start=clock();
+printf("dealing with teacher's query");
+end=clock();}
+else
+{printf("WARNING!!!! your time for current session has expired .Switching to next process");
+}
+;
+tot=tot+(start-end);}
+}
+
+
+
+void *handlestudent()//sudesh is handling the reqouest from teacher
+{
+while(sval>0)
+{
+//checking if there is any request from teacher or not
+if(tval>0)
+{
+sleep(5);//switching to other thread
+}
+//fisrt complete all of the queries submitted by teachers
+if(timeout(15)!=1)//putting a constaintnt of fixed time check
+{//do the process you are supposed to do
+start=clock();
+printf("dealing with student query");
+deletes();
+end=clock();
+}
+else
+{
+printf("WARNING!!  your time has expired for current request");
+}
+tot=tot+(end-start);//calculating the totla time elapsed in handling query
+}
+}
