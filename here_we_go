@@ -128,16 +128,15 @@ void *handleteacher()//sudesh is handling request from a student
 {
 while(tval>0)
 {
-if(timeout(15)!=1)
+if(timeout(15)==1)
+{printf("WARNING!!!! your time for current session has expired .Switching to next process");}
+else
 {//do the process you are supposed to do
 deletet();
 start=clock();
 printf("dealing with teacher's query");
-end=clock();}
-else
-{printf("WARNING!!!! your time for current session has expired .Switching to next process");
+end=clock();
 }
-;
 tot=tot+(start-end);}
 }
 
@@ -153,16 +152,16 @@ if(tval>0)
 sleep(5);//switching to other thread
 }
 //fisrt complete all of the queries submitted by teachers
-if(timeout(15)!=1)//putting a constaintnt of fixed time check
-{//do the process you are supposed to do
+if(timeout(15)==1)//putting a constraint of fixed time check
+{printf("WARNING!!  your time has expired for current request");
+}
+else
+{
+//do the process you are supposed to do
 start=clock();
 printf("dealing with student query");
 deletes();
 end=clock();
-}
-else
-{
-printf("WARNING!!  your time has expired for current request");
 }
 tot=tot+(end-start);//calculating the totla time elapsed in handling query
 }
